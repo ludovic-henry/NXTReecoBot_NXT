@@ -1,4 +1,11 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import lejos.nxt.*;
+import lejos.nxt.comm.BTConnection;
+import lejos.nxt.comm.Bluetooth;
+import lejos.nxt.comm.NXTConnection;
 import lejos.nxt.remote.RemoteMotor;
 
 public class AutonomousMode {
@@ -23,6 +30,14 @@ public class AutonomousMode {
     final static Range range_black = new Range(0, 35);
     final static Range range_wood  = new Range(36, 49);
     final static Range range_white = new Range(50, 100);
+    
+    public static final int MOTOR_A_C_STOP = 0;
+    public static final int MOTOR_A_FORWARD = 1;
+    public static final int MOTOR_A_BACKWARD = 2;
+    public static final int MOTOR_C_FORWARD = 3;
+    public static final int MOTOR_C_BACKWARD = 4; 
+    public static final int ACTION=10;
+    public static final int DISCONNECT = 99;    
 
     public static void main(String[] args) throws Exception {
         // Sensors initialization
@@ -130,4 +145,61 @@ public class AutonomousMode {
         motor_left.waitComplete();
         motor_right.waitComplete();
     }
+    
+    public void initBTConnection() throws IOException, InterruptedException{
+    	String connected = "Connected";
+        String waiting = "Waiting...";
+        String closing = "Closing...";
+        
+        LCD.drawString(waiting,0,0);
+        LCD.refresh();
+
+        BTConnection btc = Bluetooth.waitForConnection(0, NXTConnection.RAW);
+            
+        LCD.clear();
+        LCD.drawString(connected,0,0);
+        LCD.refresh();    
+
+        DataInputStream dis = btc.openDataInputStream();
+        DataOutputStream dos = btc.openDataOutputStream();
+        
+        while (true) {
+            int command = dis.readInt();
+
+            switch (command) {
+                case MOTOR_A_FORWARD: 
+                    Motor.A.forward();
+                    break;
+                case MOTOR_A_BACKWARD: 
+                    Motor.A.backward();
+                    break;
+                case MOTOR_C_FORWARD:
+                    Motor.C.forward();
+                    break;
+                case MOTOR_C_BACKWARD:
+                    Motor.C.backward();
+                    break;
+                case DISCONNECT: 
+                    break;
+    		    case ACTION:
+                    Motor.B.setSpeed(200);
+                    Motor.B.rotate(-120);
+                    Motor.B.rotate(120);			
+                    break;
+                default: 
+                    Motor.A.stop();    
+                    Motor.C.stop();                            
+            }
+            if (command == DISCONNECT) break;
+
+    }
+        dis.close();
+        dos.close();
+        Thread.sleep(100); // wait for data to drain
+        LCD.clear();
+        LCD.drawString(closing,0,0);
+        LCD.refresh();
+        btc.close();
+        LCD.clear();
+   }
 }
