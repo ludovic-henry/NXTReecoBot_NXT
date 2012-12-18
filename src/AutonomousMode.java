@@ -24,7 +24,7 @@ public class AutonomousMode {
     final static int motor_mode_flt      = 4;
 
     final static int motor_right_speed             = 180;
-    final static int motor_left_speed              = 190;
+    final static int motor_left_speed              = 180;
     final static int motor_sensor_ultrasonic_speed = 720;
 
     final static Range range_black = new Range(0, 35);
@@ -50,10 +50,21 @@ public class AutonomousMode {
 
         motor_left.forward();
         motor_right.forward();
+        motor_sensor_ultrasonic.rotate(-90);
 
         // Run the main loop
         while (!Button.ESCAPE.isDown()) {
             int light = sensor_light.readValue();
+            int distance = sensor_ultrasonic.getDistance();
+
+            LCD.clear(2);
+            LCD.clear(3);
+            LCD.clear(4);
+            LCD.clear(5);
+            LCD.drawString("Distance:", 0, 2);
+            LCD.drawString("left  = " + distance, 0, 3);
+            LCD.drawString("front = ", 0, 4);
+            LCD.drawString("right = ", 0, 5);
 
             String zone;
 
@@ -74,13 +85,23 @@ public class AutonomousMode {
             LCD.drawString("Zone: " + zone, 0, 1);
 
             if (range_wood.contains(light)) {
-                motor_left.setSpeed((int)(motor_left_speed / 1.5));
+                if (new Range(0, 13).contains(distance)) {
+                    // Trop à gauche
+                    motor_right.setSpeed((int)(motor_right_speed * 0.9));
+                } else if (new Range(15, 30).contains(distance)) {
+                    // Trop à droite
+                    motor_left.setSpeed((int)(motor_left_speed * 0.9));
+                }
             } else if (range_white.contains(light)) {
                 motor_right.stop();
                 motor_left.stop();
 
                 motor_left.waitComplete();
                 motor_right.waitComplete();
+
+                int distance_left = sensor_ultrasonic.getDistance();
+
+                motor_sensor_ultrasonic.rotate(90);
 
                 int distance_front = sensor_ultrasonic.getDistance();
 
@@ -90,32 +111,24 @@ public class AutonomousMode {
 
                 motor_sensor_ultrasonic.rotate(-180);
 
-                int distance_left = sensor_ultrasonic.getDistance();
-
                 LCD.clear(2);
                 LCD.clear(3);
                 LCD.clear(4);
                 LCD.clear(5);
                 LCD.drawString("Distance:", 0, 2);
-                LCD.drawString("l=" + distance_left, 0, 3);
-                LCD.drawString("f=" + distance_front, 0, 4);
-                LCD.drawString("r=" + distance_right, 0, 5);
-
-                motor_sensor_ultrasonic.rotate(90);
+                LCD.drawString("left  = " + distance_left, 0, 3);
+                LCD.drawString("front = " + distance_front, 0, 4);
+                LCD.drawString("right = " + distance_right, 0, 5);
 
                 if (distance_front < 25) {
                     if (distance_left > 25) {
                         // Turn left
                         motor_left.stop(true);
-                        motor_right.forward();
-
-                        Thread.sleep(2250);
+                        motor_right.rotate(327);
                     } else if (distance_right > 25) {
                         // Turn right
                         motor_right.stop();
-                        motor_left.forward();
-
-                        Thread.sleep(3000);
+                        motor_left.rotate(327);
                     } else {
                         // Forward
                         motor_left.forward();
