@@ -1,2 +1,5 @@
 .idea
 LO52 - Projet - NXT.iml
+
+*.class
+*.nxj
