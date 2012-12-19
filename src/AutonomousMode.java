@@ -36,6 +36,9 @@ public class AutonomousMode {
     public static final int MOTOR_A_BACKWARD = 2;
     public static final int MOTOR_C_FORWARD = 3;
     public static final int MOTOR_C_BACKWARD = 4; 
+    public static final int MOTOR_A_STOP = 5;
+    public static final int MOTOR_C_STOP = 6;
+    public static final int MOTOR_A_C_FORWARD = 7; 
     public static final int ACTION=10;
     public static final int DISCONNECT = 99;    
 
@@ -47,11 +50,11 @@ public class AutonomousMode {
         motor_left.setSpeed(motor_left_speed);
         motor_right.setSpeed(motor_right_speed);
         motor_sensor_ultrasonic.setSpeed(motor_sensor_ultrasonic_speed);
-
+        initBTConnection();
         motor_left.forward();
         motor_right.forward();
         motor_sensor_ultrasonic.rotate(-90);
-
+       
         // Run the main loop
         while (!Button.ESCAPE.isDown()) {
             int light = sensor_light.readValue();
@@ -159,7 +162,7 @@ public class AutonomousMode {
         motor_right.waitComplete();
     }
     
-    public void initBTConnection() throws IOException, InterruptedException{
+    public static void initBTConnection() throws IOException, InterruptedException{
     	String connected = "Connected";
         String waiting = "Waiting...";
         String closing = "Closing...";
@@ -192,6 +195,16 @@ public class AutonomousMode {
                 case MOTOR_C_BACKWARD:
                     Motor.C.backward();
                     break;
+                case MOTOR_A_C_FORWARD:
+                	Motor.A.forward();
+                	Motor.C.forward();
+                	break;
+                case MOTOR_A_STOP:
+                	Motor.A.stop();
+                	break;
+                case MOTOR_C_STOP:
+                	Motor.C.stop();
+                	break;
                 case DISCONNECT: 
                     break;
     		    case ACTION:
