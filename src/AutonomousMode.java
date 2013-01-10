@@ -2,6 +2,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import utils.Range;
+
 import lejos.nxt.*;
 import lejos.nxt.comm.BTConnection;
 import lejos.nxt.comm.Bluetooth;
