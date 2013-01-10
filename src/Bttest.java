@@ -3,6 +3,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import utils.Range;
+
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.LightSensor;

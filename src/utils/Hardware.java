@@ -26,5 +26,23 @@ public class Hardware {
     public final static Range RangeBlack = new Range(0, 35);
     public final static Range RangeWood  = new Range(36, 49);
     public final static Range RangeWhite = new Range(50, 100);
+    
+    public static final int NORTH_ID=1000;
+	public static final int SOUTH_ID=1001;
+	public static final int EAST_ID=1002;
+	public static final int WEST_ID=1003;
+    
+    public static int INITIAL_DIRECTION;
+    public static int CURRENT_DIRECTION;
+    public static int CURRENT_MODE;
+    public static int EXPLORATION_MODE=999;
+    
+    public static void setInitDirection(int d){
+    	INITIAL_DIRECTION=d;
+    }
+    
+    public static void setCurrentDirection(int d){
+    	CURRENT_DIRECTION=d;
+    }
 
 }
