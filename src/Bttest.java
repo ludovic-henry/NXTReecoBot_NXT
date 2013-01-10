@@ -1,5 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
@@ -76,14 +78,37 @@ public class Bttest {
 	        LCD.refresh();    
 
 	        DataInputStream dis = btc.openDataInputStream();
-	        DataOutputStream dos = btc.openDataOutputStream();
+            DataOutputStream dos = btc.openDataOutputStream();
 	        LCD.drawString(btc.getAddress(),0,0);
+	        
+	        for(int i=0;i<10;i++){
+	        	try { 
+        			
+        			dos.writeChars("hello");
+            		dos.flush();
+        	      } catch (IOException ioe) {
+        	        LCD.drawString("Write Exception"+ioe, 0, 0);
+        	      }
+	        }
 	        
 	        
 	        while (true) {
 	            int command = dis.readInt();
 	            int value = dis.readInt();
 	            
+	            int check = checkPos();
+	            if (check>0){
+	            	LCD.clear();
+	            	LCD.drawString(""+check,0,0);
+            		
+            		try { 
+            			
+            			dos.writeInt(1000);
+                		dos.flush();
+            	      } catch (IOException ioe) {
+            	        LCD.drawString("Write Exception"+ioe, 0, 0);
+            	      }
+            	}
 	            switch (command) {
 	                case MOTOR_A_FORWARD:
 	                	Motor.A.setSpeed(value);
@@ -106,10 +131,6 @@ public class Bttest {
 	                	Motor.C.setSpeed(value);
 	                	Motor.A.forward();
 	                	Motor.C.forward();
-	                	if (checkPos()>0){
-	                		dos.writeInt(checkPos());
-	                		dos.flush();
-	                	}
 	                	break;
 	                case MOTOR_A_STOP:
 	                	Motor.A.stop();
@@ -162,10 +183,6 @@ public class Bttest {
                 int distance_right = sensor_ultrasonic.getDistance();
 
                 motor_sensor_ultrasonic.rotate(90);
-                
-                LCD.drawString(Integer.toString(distance_left),0,0);
-                LCD.drawString(Integer.toString(distance_right),0,1);
-                LCD.drawString(Integer.toString(distance_front), 0, 2);
                 
                 if(distance_front < 25){//object front
                 	if(distance_left<25){//object left
