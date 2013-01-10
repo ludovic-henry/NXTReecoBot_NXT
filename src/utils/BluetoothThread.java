@@ -3,6 +3,7 @@ package utils;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import lejos.nxt.*;
 import lejos.nxt.comm.BTConnection;
@@ -44,7 +45,7 @@ public class BluetoothThread extends Thread {
     public static final int OBJECT_FRONT = 104;
     public static final int OBJECT_LEFT = 105;
     public static final int OBJECT_RIGHT = 106;
-	
+    
 	public BluetoothThread(BTConnection blueetoothconnect) {
 		this.btc=blueetoothconnect;
 		this.dataIn=btc.openDataInputStream();
@@ -54,7 +55,10 @@ public class BluetoothThread extends Thread {
 	public void run()
     {
 		Hardware.setInitDirection(Hardware.NORTH_ID);
+		Hardware.setCurrentMode(Hardware.REMOTE_SIMPLE);
         do {
+        	LCD.clear(7);
+        	LCD.drawString(Integer.toString(Hardware.getCurrentMode()), 0, 7);
             try {
 				command = dataIn.readInt();
 				value = dataIn.readInt();
@@ -63,6 +67,9 @@ public class BluetoothThread extends Thread {
 				e.printStackTrace();
 			}
             
+            LCD.clear(6);
+        	LCD.drawInt((int) new Date().getSeconds(), 0, 6);
+        	
             switch (command) {
 	            case MOTOR_A_FORWARD:
 	            	Motor.A.setSpeed(value);
@@ -91,6 +98,18 @@ public class BluetoothThread extends Thread {
 	            	break;
 	            case MOTOR_C_STOP:
 	            	Motor.C.stop();
+	            	break;
+	            case Hardware.EXPLORATION_MODE:
+	            	Hardware.setCurrentMode(Hardware.EXPLORATION_MODE);
+	            	break;
+	            case Hardware.REMOTE_MODE:
+	            	Hardware.setCurrentMode(Hardware.REMOTE_MODE);
+	            	break;
+	            case Hardware.REMOTE_SIMPLE:
+	            	Hardware.setCurrentMode(Hardware.REMOTE_SIMPLE);
+	            	break;
+	            case Hardware.WORLD_EXPLORATION_MODE:
+	            	Hardware.setCurrentMode(Hardware.WORLD_EXPLORATION_MODE);
 	            	break;
 	            case DISCONNECT:
 	            	this.interrupt();

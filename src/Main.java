@@ -31,11 +31,13 @@ public class Main {
         Behavior backHitWall = new BackHitWallBehavior(navigator);
         Behavior escapeButtonPress = new EscapeButtonPressBehavior();
         Behavior bluetoohSlave = new BluetoothBehavior(navigator,btc);
+        Behavior wood = new WoodBehavior(navigator);
         
         BluetoothThread BTThread = new BluetoothThread(btc);
         BTThread.start();
 
-        Behavior[] behaviors = {forward, backHitWall, bluetoohSlave, whiteSquare,escapeButtonPress};
+        Behavior[] behaviors = {forward, backHitWall, bluetoohSlave, whiteSquare,wood,escapeButtonPress};
+
 
         Arbitrator arbitrator = new Arbitrator(behaviors);
         arbitrator.start();

@@ -15,6 +15,7 @@ import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
 
 import utils.BluetoothThread;
+import utils.Hardware;
 
 /**
  * Created with IntelliJ IDEA.
@@ -41,7 +42,7 @@ public class BluetoothBehavior implements Behavior  {
 	}
 
 	public boolean takeControl() {
-    	return this.connected;
+    	return this.connected && (Hardware.getCurrentMode() != Hardware.EXPLORATION_MODE);
     }
 
    
@@ -50,9 +51,9 @@ public class BluetoothBehavior implements Behavior  {
     	LCD.clear();
         LCD.drawString("Connected",0,0);
         supressed = false;
-        while(!supressed) {
+        while(!supressed && (Hardware.getCurrentMode() != Hardware.EXPLORATION_MODE)) {
         	try { Thread.sleep(200); }
-	 	 	 	catch (Exception e) { ; }
+	 	 	catch (Exception e) { ; }
         }
 
     }

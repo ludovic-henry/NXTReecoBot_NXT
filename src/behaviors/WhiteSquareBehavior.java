@@ -120,7 +120,8 @@ public class WhiteSquareBehavior implements Behavior {
         LCD.drawString("left  = " + distance_left, 0, 3);
         LCD.drawString("front = " + distance_front, 0, 4);
         LCD.drawString("right = " + distance_right, 0, 5);
-        if(Hardware.CURRENT_MODE==Hardware.EXPLORATION_MODE){
+        
+        if(Hardware.getCurrentMode()==Hardware.EXPLORATION_MODE){
         	if (distance_front < 25) {
         		if (distance_left > 25) {
         			((DifferentialPilot)this.navigator.getMoveController()).rotate(-90);
@@ -133,6 +134,10 @@ public class WhiteSquareBehavior implements Behavior {
         			Hardware.setCurrentDirection(Hardware.NORTH_ID);
         		}
         	}
+        	
+        	((DifferentialPilot)this.navigator.getMoveController()).travel(2);
+        } else {
+        	
         }
     }
 

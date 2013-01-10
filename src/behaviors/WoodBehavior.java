@@ -1,48 +1,53 @@
 package behaviors;
 
 import utils.Hardware;
+import lejos.nxt.LCD;
 import lejos.nxt.Motor;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
 
 public class WoodBehavior implements Behavior{
 	private int initial_speed;
+	private boolean suppressed = false;
+	
+	private Navigator nav;
+	public WoodBehavior(Navigator navigator){
+		initial_speed=Hardware.MotorLeftSpeed;
+		this.nav=navigator;
+	}
+	
 	@Override
 	public boolean takeControl() {
-		initial_speed=Hardware.MotorLeftSpeed;
-		 return Hardware.RangeWood.contains(Hardware.SensorLight.readValue())
-                 || Hardware.SensorUltrasonic.getDistance() < 20;
+		 return Hardware.RangeWood.contains(Hardware.SensorLight.readValue()) 
+				 && (Hardware.getCurrentMode()!= Hardware.REMOTE_SIMPLE) 
+				 && (Hardware.getCurrentMode()!= Hardware.REMOTE_MODE);
 	}
 
 	@Override
 	public void action() {
-		do{
-			Hardware.MotorSensorUltrasonic.rotate(-90);
-	        int distance_left = Hardware.SensorUltrasonic.getDistance();
+			this.nav.stop();
 
-	        Hardware.MotorSensorUltrasonic.rotate(90);
-	        int distance_front = Hardware.SensorUltrasonic.getDistance();
+			int angle = 10;
 
-	        Hardware.MotorSensorUltrasonic.rotate(90);
-	        int distance_right = Hardware.SensorUltrasonic.getDistance();
-	        
-	        if(distance_left<distance_right){
-	        	Hardware.MotorLeft.setSpeed(initial_speed+10);
-	        }
-	        try {
-				Thread.sleep (1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			for (
+					int i = 1; 
+					!this.suppressed && Hardware.RangeWood.contains(Hardware.SensorLight.readValue());
+					i++){
+
+				LCD.clear(0);
+				LCD.drawString("CONTROL "+Hardware.SensorLight.readValue(), 0, 0);
+				((DifferentialPilot)this.nav.getMoveController()).rotate(i * angle * Math.pow(-1, i));
 			}
-	        Hardware.MotorLeft.setSpeed(initial_speed);
-		}while(Hardware.RangeWood.contains(Hardware.SensorLight.readValue()));
+			LCD.drawString(Integer.toString(Hardware.getCurrentMode()), 0, 6);
+
+			this.suppressed = false;
 		
 	}
 
 	@Override
 	public void suppress() {
-		// TODO Auto-generated method stub
-		
+		this.suppressed = true;
 	}
 
 }

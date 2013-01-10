@@ -35,7 +35,10 @@ public class Hardware {
     public static int INITIAL_DIRECTION;
     public static int CURRENT_DIRECTION;
     public static int CURRENT_MODE;
-    public static int EXPLORATION_MODE=999;
+    public static final int EXPLORATION_MODE=50;
+    public static final int REMOTE_MODE = 51;
+    public static final int WORLD_EXPLORATION_MODE = 52;
+    public static final int REMOTE_SIMPLE = 53;
     
     public static void setInitDirection(int d){
     	INITIAL_DIRECTION=d;
@@ -44,5 +47,13 @@ public class Hardware {
     public static void setCurrentDirection(int d){
     	CURRENT_DIRECTION=d;
     }
+
+	public static int getCurrentMode() {
+		return CURRENT_MODE;
+	}
+	
+	public static void setCurrentMode(int d) {
+		CURRENT_MODE = d;
+	}
 
 }
