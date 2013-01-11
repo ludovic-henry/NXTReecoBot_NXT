@@ -45,7 +45,11 @@ public class WhiteSquareBehavior implements Behavior {
         this.map = map;
         this.previousWaypoint = this.navigator.getWaypoint();
         this.btc=btc;
-        this.dataOut=btc.openDataOutputStream();      
+
+        if (this.btc != null) {
+            this.dataOut=btc.openDataOutputStream();
+        }
+
     }
 
     @Override
@@ -101,15 +105,17 @@ public class WhiteSquareBehavior implements Behavior {
         		}
         	}
         }
-        
-        try {
-			dataOut.writeInt(square_type);
-	        dataOut.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        LCD.drawString("SENT"+square_type, 0, 0);
+
+        if (this.btc != null) {
+            try {
+                dataOut.writeInt(square_type);
+                dataOut.flush();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            LCD.drawString("SENT"+square_type, 0, 0);
+        }
         
 
         LCD.clear(2);

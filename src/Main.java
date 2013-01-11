@@ -24,17 +24,19 @@ public class Main {
         Navigator navigator = new Navigator(pilot);
         LineMap map = new LineMap();
 
-        BTConnection btc = Bluetooth.waitForConnection(0, NXTConnection.RAW);
+        BTConnection btc = null; //Bluetooth.waitForConnection(0, NXTConnection.RAW);
         
         Behavior forward = new ForwardBehavior(navigator);
         Behavior whiteSquare = new WhiteSquareBehavior(navigator, map,btc);
         Behavior backHitWall = new BackHitWallBehavior(navigator);
         Behavior escapeButtonPress = new EscapeButtonPressBehavior();
-        Behavior bluetoohSlave = new BluetoothBehavior(navigator,btc);
+        Behavior bluetoohSlave = new BluetoothBehavior(navigator);
         Behavior wood = new WoodBehavior(navigator);
+
+        Hardware.setCurrentMode(Hardware.EXPLORATION_MODE);
         
-        BluetoothThread BTThread = new BluetoothThread(btc);
-        BTThread.start();
+//        BluetoothThread BTThread = new BluetoothThread(btc);
+//        BTThread.start();
 
         Behavior[] behaviors = {forward, backHitWall, bluetoohSlave, whiteSquare,wood,escapeButtonPress};
 

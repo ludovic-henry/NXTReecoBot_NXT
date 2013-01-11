@@ -55,7 +55,6 @@ public class BluetoothThread extends Thread {
 	public void run()
     {
 		Hardware.setInitDirection(Hardware.NORTH_ID);
-		Hardware.setCurrentMode(Hardware.REMOTE_SIMPLE);
         do {
         	LCD.clear(7);
         	LCD.drawString(Integer.toString(Hardware.getCurrentMode()), 0, 7);

@@ -28,12 +28,10 @@ public class BluetoothBehavior implements Behavior  {
 	private BTConnection btc;
 	private Boolean supressed = false;
 	private Navigator navigator;
-	private BluetoothThread BTThread;
 	private boolean connected;
 	    
-    public BluetoothBehavior(Navigator navigator,BTConnection bluetoothConnection) {
+    public BluetoothBehavior(Navigator navigator) {
     	this.navigator = navigator;
-    	this.btc=bluetoothConnection;
     	this.connected=true;
     	// crer thread
     	// lire contenu du socket
