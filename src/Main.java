@@ -20,7 +20,7 @@ import utils.Hardware;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        DifferentialPilot pilot = new DifferentialPilot(5.6f, 12f, Hardware.MotorLeft, Hardware.MotorRight, true);
+        DifferentialPilot pilot = new DifferentialPilot(5.6f, 12f, Hardware.MotorLeft, Hardware.MotorRight);
         Navigator navigator = new Navigator(pilot);
         LineMap map = new LineMap();
 
